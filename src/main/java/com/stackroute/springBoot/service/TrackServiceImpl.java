@@ -44,6 +44,16 @@ public class TrackServiceImpl implements TrackService {
     {
         trackRepository.deleteById(id);
     }
+    @Override
+    public List<Track> getByTrackName(String name){
+        return trackRepository.findByName(name);
+    }
+    @Override
+    public List<Track> getTrackByNameSortByName(String name)
+    {
+        return trackRepository.findByNameSortedById(name);
+    }
+        }
 
 
-}
+

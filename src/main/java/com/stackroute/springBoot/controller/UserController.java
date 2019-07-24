@@ -35,6 +35,8 @@ public class UserController {
     @GetMapping("user")
     public ResponseEntity<?> getAllUsers(){
         //System.out.println(trackRepository.findByFirstName("Abinash"));
+        System.out.println(trackService.getByTrackName("Nice").toString());
+        System.out.println(trackService.getTrackByNameSortByName("Nice").toString());
 
         return new ResponseEntity<List<Track>>(trackService.getAllUsers(),HttpStatus.OK);
     }
