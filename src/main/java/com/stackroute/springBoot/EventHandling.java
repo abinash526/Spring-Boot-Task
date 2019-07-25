@@ -16,6 +16,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EventHandling implements ApplicationListener<ContextRefreshedEvent>, CommandLineRunner {
+
+    //Environment Variable is Accessed
+    @Value("${spring.datasource.url}")
+     String s;
     @Value("${seedTrack1.id}")
     int id1;
     @Value("${seedTrack1.name}")
@@ -54,6 +58,7 @@ public class EventHandling implements ApplicationListener<ContextRefreshedEvent>
         int id;
         String name;
         String comment;
+       logger.info("{}",s);
         trackRepository.save(new Track(id2, name2, comment2));
 
     }
