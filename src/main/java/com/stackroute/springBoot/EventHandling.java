@@ -5,6 +5,7 @@ import com.stackroute.springBoot.repository.TrackRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationEvent;
@@ -15,6 +16,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EventHandling implements ApplicationListener<ContextRefreshedEvent>, CommandLineRunner {
+    @Value("${seedTrack1.id}")
+    int id1;
+    @Value("${seedTrack1.name}")
+    String name1;
+    @Value("${seedTrack1.comment}")
+    String comment;
+    @Value("${seedTrack2.id}")
+    int id2;
+    @Value("${seedTrack2.name}")
+    String name2;
+    @Value("${seedTrack2.comment}")
+    String comment2;
+
+
     @Autowired
     private TrackRepository trackRepository;
     private static final Logger logger = LoggerFactory.getLogger(EventHandling.class);
@@ -24,7 +39,9 @@ public class EventHandling implements ApplicationListener<ContextRefreshedEvent>
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        trackRepository.save(new Track(1, "Senorita", "Good"));
+
+
+        trackRepository.save(new Track(id1, name1, comment));
         trackRepository.findAll().forEach((track) -> {
             logger.info("{}", track);
         });
@@ -34,7 +51,10 @@ public class EventHandling implements ApplicationListener<ContextRefreshedEvent>
 
     @Override
     public void run(String... args) throws Exception {
-        trackRepository.save(new Track(2, "Madhu", "good"));
+        int id;
+        String name;
+        String comment;
+        trackRepository.save(new Track(id2, name2, comment2));
 
     }
 }
