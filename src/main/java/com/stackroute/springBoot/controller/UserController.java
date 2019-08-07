@@ -17,10 +17,10 @@ import java.util.List;
 public class UserController {
     @Value("${track.name}")
     String name;
-    @Autowired
+   
     TrackService trackService;
-    TrackRepository trackRepository;
-
+    
+    @Autowired
     public UserController(TrackService trackService) {
         this.trackService = trackService;
     }
