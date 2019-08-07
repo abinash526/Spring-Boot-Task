@@ -1,68 +1,81 @@
-package com.stackroute.springBoot.controller;
+package com.stackroute.controller;
 
-import com.stackroute.springBoot.domain.Track;
-import com.stackroute.springBoot.repository.TrackRepository;
-import com.stackroute.springBoot.service.TrackService;
+import com.stackroute.domain.Track;
+import com.stackroute.exceptions.TrackAlreadyExistsException;
+import com.stackroute.exceptions.TrackNotFoundException;
+import com.stackroute.service.TrackService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping(value ="api/v1")
-public class UserController {
-   
-    TrackService trackService;
-    TrackRepository trackRepository;
+@RequestMapping(value="api/v1")
+public class TrackController {
 
+  private TrackService trackService;
     @Autowired
-    public UserController(TrackService trackService) {
+    public TrackController(TrackService trackService) {
         this.trackService = trackService;
     }
+
     @PostMapping("track")
-    public ResponseEntity<?> saveuser(@RequestBody Track track){
+    public ResponseEntity<?> saveTrack(@RequestBody Track track) {
 
         ResponseEntity responseEntity;
         try {
-            trackService.saveUser(track);
-            responseEntity=new ResponseEntity<String>("Successfully Created", HttpStatus.CREATED);
+            trackService.saveTrack(track);
+            responseEntity = new ResponseEntity("Successfully created", HttpStatus.CREATED);
+        }
 
-        }catch (Exception e){
-            responseEntity=new ResponseEntity<String>(e.getMessage(),HttpStatus.CONFLICT);
+        catch(TrackAlreadyExistsException ex) {
+            responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
         }
-        return responseEntity;
-    }
-    @GetMapping("user")
-    public ResponseEntity<?> getAllUsers(){
-        //System.out.println(trackRepository.findByFirstName("Abinash"));
-        System.out.println(trackService.getByTrackName("Nice").toString());
-        System.out.println(trackService.getTrackByNameSortByName("Nice").toString());
 
-        return new ResponseEntity<List<Track>>(trackService.getAllUsers(),HttpStatus.OK);
+        return responseEntity;
+
     }
-    @PutMapping(value = "/update")
-    public ResponseEntity<?> updateUser(@RequestBody Track track)
-    {
+
+    @DeleteMapping(value = "/track/{id}")
+    public ResponseEntity<?> deleteTrack(@PathVariable Integer id) {
+
         ResponseEntity responseEntity;
-        try
-        {
-            trackService.saveUser(track);
-            responseEntity=new ResponseEntity<String>("Succesfully Updated",HttpStatus.CREATED);
+        try{
+
+            trackService.deleteTrack(id);
+            responseEntity = new ResponseEntity("Delete Successfull", HttpStatus.NO_CONTENT);
+
         }
-        catch(Exception e)
-        {
-            responseEntity=new ResponseEntity<String>(e.getMessage(),HttpStatus.CONFLICT);
+
+        catch (TrackNotFoundException ex) {
+
+            responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
+        }
+
+        return responseEntity;
+
+    }
+
+    @PutMapping(value = "/track/{id}/{comment}")
+    public ResponseEntity<?> updateTrack(@PathVariable int id, @PathVariable String comment) {
+
+        ResponseEntity responseEntity;
+        try {
+            trackService.updateTrack(id,comment);
+            responseEntity = new ResponseEntity<String>("Update Successfull", HttpStatus.CREATED);
+        } catch (Exception ex) {
+            responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
         }
         return responseEntity;
+
     }
-    @DeleteMapping(value = "/delete/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable int id)
-    {
-        ResponseEntity responseEntity;
-        trackService.deleteUser(id);
-        responseEntity=new ResponseEntity<String>("Succesfully deleted",HttpStatus.NO_CONTENT);
-        return responseEntity;
+
+
+
+    @GetMapping("tracks")
+    public ResponseEntity<?> getAllTracks() {
+        System.out.println(trackService.getByTrackName("good").toString());
+        System.out.println(trackService.getTrackByNameSortByName("good").toString());
+        return new ResponseEntity<>(trackService.getAllTracks(), HttpStatus.OK);
 
     }
 
