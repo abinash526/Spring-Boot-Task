@@ -55,6 +55,10 @@ public class EventHandling implements ApplicationListener<ContextRefreshedEvent>
 
     @Override
     public void run(String... args) throws Exception {
+         System.out.println(env.getProperty("app.name"));
+         System.out.println(env.getProperty("JAVA_HOME"));
+
+
         int id;
         String name;
         String comment;
