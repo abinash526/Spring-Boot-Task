@@ -12,10 +12,8 @@ import java.util.List;
 @RestController
 @RequestMapping(value ="api/v1")
 public class UserController {
-    //@Autowired
     TrackService trackService;
-    TrackRepository trackRepository;
-
+    @Autowired
     public UserController(TrackService trackService) {
         this.trackService = trackService;
     }
