@@ -1,89 +1,82 @@
-package com.stackroute.springBoot.controller;
+package com.stackroute.controller;
 
-import com.stackroute.springBoot.domain.Track;
-import com.stackroute.springBoot.exception.TrackNotFoundException;
-import com.stackroute.springBoot.repository.TrackRepository;
-import com.stackroute.springBoot.service.TrackService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import com.stackroute.domain.Track;
+import com.stackroute.exceptions.TrackAlreadyExistsException;
+import com.stackroute.exceptions.TrackNotFoundException;
+import com.stackroute.service.TrackService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping(value ="api/v1")
-public class UserController {
-    @Value("${track.name}")
-    String name;
-   
-    TrackService trackService;
-    
+@RequestMapping(value="api/v1")
+public class TrackController {
+
+  private TrackService trackService;
     @Autowired
-    public UserController(TrackService trackService) {
+    public TrackController(TrackService trackService) {
         this.trackService = trackService;
     }
-    @PostMapping("/track")
-    public ResponseEntity<?> saveuser(@RequestBody Track track)throws RuntimeException{
+
+    @PostMapping("track")
+    public ResponseEntity<?> saveTrack(@RequestBody Track track) {
 
         ResponseEntity responseEntity;
-
-            trackService.saveUser(track);
-            responseEntity=new ResponseEntity<String>("Successfully Created", HttpStatus.CREATED);
-
-
-        return responseEntity;
-    }
-    @PostMapping("/tracks")
-    public ResponseEntity<?> saveuser1(@RequestBody List<Track> track)throws RuntimeException{
-
-        ResponseEntity responseEntity;
-        for (Track t:track
-             ) {
-            trackService.saveUser(t);
+        try {
+            trackService.saveTrack(track);
+            responseEntity = new ResponseEntity("Successfully created", HttpStatus.CREATED);
         }
 
-        responseEntity=new ResponseEntity<List<Track>>(trackService.getAllUsers(), HttpStatus.CREATED);
-
+        catch(TrackAlreadyExistsException ex) {
+            responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
+        }
 
         return responseEntity;
+
     }
-    @GetMapping("user")
-    public ResponseEntity<?> getAllUsers(){
-        //System.out.println(trackRepository.findByFirstName("Abinash"));
 
+    @DeleteMapping(value = "/track/{id}")
+    public ResponseEntity<?> deleteTrack(@PathVariable Integer id) {
 
-      //  System.out.println(trackService.getByTrackName(name).toString());
-
-        return new ResponseEntity<List<Track>>(trackService.getAllUsers(),HttpStatus.OK);
-    }
-    @PutMapping(value = "/update")
-    public ResponseEntity<?> updateUser(@RequestBody Track track)
-    {
         ResponseEntity responseEntity;
+        try{
 
-            trackService.saveUser(track);
-            responseEntity=new ResponseEntity<String>("Succesfully Updated",HttpStatus.CREATED);
+            trackService.deleteTrack(id);
+            responseEntity = new ResponseEntity("Delete Successfull", HttpStatus.NO_CONTENT);
 
+        }
+
+        catch (TrackNotFoundException ex) {
+
+            responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
+        }
 
         return responseEntity;
+
     }
-    @DeleteMapping(value = "/delete/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable int id) throws RuntimeException
-    {
+
+    @PutMapping(value = "/track/{id}/{comment}")
+    public ResponseEntity<?> updateTrack(@PathVariable int id, @PathVariable String comment) {
+
         ResponseEntity responseEntity;
-
-            trackService.deleteUser(id);
-        responseEntity=new ResponseEntity<String>("Succesfully deleted",HttpStatus.NO_CONTENT);
+        try {
+            trackService.updateTrack(id,comment);
+            responseEntity = new ResponseEntity<String>("Update Successfull", HttpStatus.CREATED);
+        } catch (Exception ex) {
+            responseEntity = new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
+        }
         return responseEntity;
 
     }
-    @RequestMapping("/*")
-    public String klm()throws RuntimeException{
-        if(true)
-        throw new RuntimeException("Page not found");
-        return null;
+
+
+
+    @GetMapping("tracks")
+    public ResponseEntity<?> getAllTracks() {
+        System.out.println(trackService.getByTrackName("good").toString());
+        System.out.println(trackService.getTrackByNameSortByName("good").toString());
+        return new ResponseEntity<>(trackService.getAllTracks(), HttpStatus.OK);
+
     }
 
 }
