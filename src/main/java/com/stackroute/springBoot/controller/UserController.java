@@ -32,7 +32,6 @@ public class UserController {
     }
     @GetMapping("user")
     public ResponseEntity<?> getAllUsers(){
-        //System.out.println(trackRepository.findByFirstName("Abinash"));
 
         return new ResponseEntity<List<Track>>(trackService.getAllUsers(),HttpStatus.OK);
     }
