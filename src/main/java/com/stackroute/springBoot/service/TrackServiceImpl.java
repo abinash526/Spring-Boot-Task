@@ -48,8 +48,12 @@ public class TrackServiceImpl implements TrackService {
 
     }
     @Override
-    public void deleteUser(int id)
+    public void deleteUser(int id) throw TrackNotFoundException
     {
+         if(!trackRepository.existsById(id))
+        {
+            throw new TrackNotFoundException("Track not found");
+        }
         trackRepository.deleteById(id);
     }
     @Override
