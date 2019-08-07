@@ -12,10 +12,8 @@ import java.util.List;
 @RestController
 @RequestMapping(value ="api/v1")
 public class UserController {
-    //@Autowired
     TrackService trackService;
-    TrackRepository trackRepository;
-
+    @Autowired
     public UserController(TrackService trackService) {
         this.trackService = trackService;
     }
@@ -34,9 +32,6 @@ public class UserController {
     }
     @GetMapping("user")
     public ResponseEntity<?> getAllUsers(){
-        //System.out.println(trackRepository.findByFirstName("Abinash"));
-        System.out.println(trackService.getByTrackName("Nice").toString());
-        System.out.println(trackService.getTrackByNameSortByName("Nice").toString());
 
         return new ResponseEntity<List<Track>>(trackService.getAllUsers(),HttpStatus.OK);
     }
