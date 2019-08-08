@@ -1,19 +1,14 @@
 package com.stackroute.springBoot.domain;
 
-import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
-
-
-@Document(collection = "Track")
-@Data
+@Entity
 public class Track {
     @Id
-   // @GeneratedValue(strategy = GenerationType.AUTO)
-    int id;
-    String name;
-    String comment;
+    private int id;
+    private String name;
+    private String comment;
 
     @Override
     public String toString() {
